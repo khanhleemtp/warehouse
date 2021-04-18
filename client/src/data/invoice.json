@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "title": "Đơn 2",
+  "totalPrice": 10000,
+  "timeCreate": "2021-4-15",
+  "customer": "khanh",
+  "employee": "dong",
+  "type": "in",
+  "history": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "name": "Bút chì",
+      "inPrice": 3000,
+      "outPrice": 4000
+    },
+    {
+      "productId": 2,
+      "quantity": 20,
+      "name": "Tẩy",
+      "inPrice": 6000,
+      "outPrice": 8000
+    }
+  ]
+}
