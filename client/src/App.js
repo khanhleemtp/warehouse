@@ -8,6 +8,7 @@ import { pink } from "@material-ui/core/colors";
 import ProductItem from "./pages/ProductItem";
 import Loading from "./components/Loading";
 import InvocePage from "./pages/InvocePage";
+import ProtectedRoute from './hoc/ProtectedRoute'
 
 const Layout = lazy(() => pMinDelay(import("./components/Layout"), 500));
 const Notes = lazy(() => pMinDelay(import("./pages/Notes"), 500));
@@ -47,24 +48,49 @@ function App() {
               <Route exact path="/">
                 <Notes />
               </Route>
-              <Route path="/create">
+              <ProtectedRoute
+                component={Create}
+                path="/create"
+              />
+              {/* <Route path="/create">
                 <Create />
-              </Route>
-              <Route path="/products/:id">
+              </Route> */}
+
+              <ProtectedRoute
+                component={ProductItem}
+                path="/products/:id"
+              />
+              {/* <Route path="/products/:id">
                 <ProductItem />
-              </Route>
-              <Route path="/inventory">
+              </Route> */}
+              <ProtectedRoute
+                component={Inventory}
+                path="/inventory"
+              />
+              {/* <Route path="/inventory">
                 <Inventory />
-              </Route>
-              <Route path="/invoices/:id">
+              </Route> */}
+              <ProtectedRoute
+                component={InvocePage}
+                path="/invoices/:id"
+              />
+              {/* <Route path="/invoices/:id">
                 <InvocePage />
-              </Route>
-              <Route path="/in">
+              </Route> */}
+              <ProtectedRoute
+                component={InProduct}
+                path="/in"
+              />
+              <ProtectedRoute
+                component={OutProduct}
+                path="/out"
+              />
+              {/* <Route path="/in">
                 <InProduct />
-              </Route>
-              <Route path="/out">
+              </Route> */}
+              {/* <Route path="/out">
                 <OutProduct />
-              </Route>
+              </Route> */}
             </Layout>
           </Switch>
         </Router>

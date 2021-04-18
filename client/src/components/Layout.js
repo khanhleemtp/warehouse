@@ -18,6 +18,8 @@ import UpdateIcon from "@material-ui/icons/Update";
 import moment from "moment";
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { useState } from 'react'
 
 const drawWidth = 240;
 
@@ -92,6 +94,9 @@ const Layout = ({ children }) => {
     },
   ];
 
+
+  const [err, setErr] = useState('')
+ console.log('token' ,localStorage.getItem('tokenAdmin'))
   return (
     <div className={classes.root}>
       {/* appbar */}
@@ -131,6 +136,14 @@ const Layout = ({ children }) => {
               key={item.text}
               button
               onClick={() => {
+               let token = localStorage.getItem('tokenAdmin');
+                if(item.path === '/') {
+                  return setErr('');
+                }
+                if(token == null) {
+                  return setErr('Hãy đăng nhập trước khi dùng');
+                }
+                setErr('')
                 history.push({ pathname: item.path });
               }}
               className={
@@ -141,10 +154,24 @@ const Layout = ({ children }) => {
               <ListItemText primary={item.text} />
             </ListItem>
           ))}
+          {
+          localStorage.getItem('tokenAdmin') ? 
+            <ListItem
+              button
+              onClick={() => {
+                localStorage.removeItem('tokenAdmin');
+                history.push('/')
+              }}
+            >
+              <ListItemIcon><ExitToAppIcon/></ListItemIcon>
+              <ListItemText primary={"Đăng xuất"} />
+            </ListItem>: null
+          }
         </List>
       </Drawer>
       <div className={classes.page}>
         <div className={classes.toolbar}></div>
+        <Typography variant="h6" color="error">{err}</Typography>
         {children}
       </div>
     </div>
