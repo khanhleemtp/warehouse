@@ -1,8 +1,12 @@
 # warehouse
-# technology:  
-  - my sql, reactjs, nodejs 
-# setting sql 
-``` mysql
+
+# technology:
+
+- my sql, reactjs, nodejs
+
+# setting sql
+
+```mysql
    CREATE TABLE product (
   id INT PRIMARY KEY AUTO_INCREMENT,
   avaiable INT DEFAULT 0,
@@ -16,7 +20,7 @@ CREATE TABLE history(
   id INT PRIMARY KEY AUTO_INCREMENT,
   productId INT,
   invoiceId INT,
-  quantity INT,
+  quantity INT
 );
 CREATE TABLE invoice (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -35,6 +39,8 @@ ADD FOREIGN KEY(productId) REFERENCES product(id) ON DELETE
 SET NULL;
 
 ```
+
 # run
-  - cd server -> yarn dev
-  - cd client -> yarn start
+
+- cd server -> yarn dev
+- cd client -> yarn start
