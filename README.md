@@ -33,18 +33,7 @@ SET NULL;
 ALTER TABLE history
 ADD FOREIGN KEY(productId) REFERENCES product(id) ON DELETE
 SET NULL;
-CREATE TABLE stock_item (
-  item_id INT PRIMARY KEY AUTO_INCREMENT,
-  quantity INT,
-  supplier_id INT,
-  product_id INT
-);
-CREATE TABLE order_item (
-  item_id INT PRIMARY KEY AUTO_INCREMENT,
-  quantity INT,
-  product_id INT,
-  invoice_id INT
-);
+
 ```
 # run
   - cd server -> yarn dev
