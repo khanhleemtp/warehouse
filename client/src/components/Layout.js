@@ -134,9 +134,9 @@ const Layout = ({ children }) => {
               onClick={() => {
                 let token = localStorage.getItem("tokenAdmin");
                 if (item.path === "/") {
-                  return setErr("");
+                  setErr("");
                 }
-                if (token == null) {
+                if (token === null) {
                   return setErr("Hãy đăng nhập trước khi dùng");
                 }
                 setErr("");
