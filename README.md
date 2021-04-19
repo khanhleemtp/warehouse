@@ -42,5 +42,5 @@ SET NULL;
 
 # run
 
-- cd server -> yarn dev
-- cd client -> yarn start
+- cd server -> yarn install (npm install) -> yarn dev (npm run dev)
+- cd client -> yarn install (npm install) -> yarn start (npm run start)
