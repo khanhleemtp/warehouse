@@ -310,8 +310,13 @@ function TypeProduct({ type }) {
               ))}
             </Select>
           ) : (
-            <Typography variant="h6">Không có sản phẩm nào</Typography>
+            !isPending && (
+              <Typography variant="body" color="error">
+                Không có sản phẩm nào trong kho
+              </Typography>
+            )
           )}
+
           <TextField
             // onChange={(e) => setOutPrice(e.target.value)}
             label="Số lượng"
