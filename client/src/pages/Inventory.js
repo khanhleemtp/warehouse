@@ -228,7 +228,7 @@ function Inventory() {
               {products?.data.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell component="th" scope="row">
-                    BT_000{product.id}
+                    BT_{product.id}
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {product.name}

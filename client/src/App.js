@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import { Suspense } from "react";
 import { lazy } from "@loadable/component";
 import pMinDelay from "p-min-delay";
@@ -43,9 +48,18 @@ function App() {
         <Router>
           <Switch>
             <Layout>
-              <Route exact path="/">
-                <Notes />
-              </Route>
+              <Route
+                exact
+                path="/"
+                render={(props) => {
+                  if (!localStorage.getItem("tokenAdmin")) {
+                    return <Notes {...props} />;
+                  } else {
+                    return <Redirect to="inventory" />;
+                  }
+                }}
+              />
+
               <ProtectedRoute component={Create} path="/create" />
               {/* <Route path="/create">
                 <Create />

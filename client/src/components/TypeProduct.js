@@ -179,7 +179,7 @@ function TypeProduct({ type }) {
       <Typography variant="h6" component="h2" color="secondary" gutterBottom>
         Thêm sản phẩm
       </Typography>
-      {!isPending && (
+      {/* {!isPending && (
         <CSVLink
           data={products?.data}
           filename={"report.csv"}
@@ -188,7 +188,7 @@ function TypeProduct({ type }) {
         >
           <Button>Tải xuống báo cáo</Button>
         </CSVLink>
-      )}
+      )} */}
 
       <Snackbar
         open={openSnackbar}
