@@ -283,31 +283,35 @@ function TypeProduct({ type }) {
         />
         <FormControl className={classes.formControl}>
           <InputLabel id="demo-simple-select-label">Chọn sản phẩm</InputLabel>
-          <Select
-            className={classes.select}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={name}
-            onChange={(e) => {
-              let id = e.target.value;
-              const product = products?.data.filter((p) => p.id === id)[0];
-              setName(id);
-              if (typeInvoice === "out" && product.avaiable < quantity) {
-                return setErrorQty(
-                  "Số lượng sản phẩm không vượt quá trong kho"
-                );
-              }
+          {products && products?.data ? (
+            <Select
+              className={classes.select}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={name}
+              onChange={(e) => {
+                let id = e.target.value;
+                const product = products?.data.filter((p) => p.id === id)[0];
+                setName(id);
+                if (typeInvoice === "out" && product.avaiable < quantity) {
+                  return setErrorQty(
+                    "Số lượng sản phẩm không vượt quá trong kho"
+                  );
+                }
 
-              setProductChoice({ ...product });
-            }}
-            autoWidth={true}
-          >
-            {products?.data.map((product) => (
-              <MenuItem key={product.id} value={product.id}>
-                {product.name}
-              </MenuItem>
-            ))}
-          </Select>
+                setProductChoice({ ...product });
+              }}
+              autoWidth={true}
+            >
+              {products?.data.map((product) => (
+                <MenuItem key={product.id} value={product.id}>
+                  {product.name}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            <Typography variant="h6">Không có sản phẩm nào</Typography>
+          )}
           <TextField
             // onChange={(e) => setOutPrice(e.target.value)}
             label="Số lượng"
