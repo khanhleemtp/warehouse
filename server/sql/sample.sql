@@ -72,3 +72,40 @@ SET NULL;
 --   FOREIGN KEY(branch_id) REFERENCES branch(branch_id) ON DELETE CASCADE
 -- );
 --   FOREIGN KEY(mgr_id) REFERENCES employee(emp_id) ON DELETE SET NULL
+SELECT product.id as id,
+  product.inPrice as inPrice,
+  product.outPrice as outPrice,
+  product.avaiable as avaiable,
+  product.name as name,
+  product.description as description,
+  invoice.timeCreate as timeCreate,
+  SUM(history.quantity) as totalQty,
+  invoice.type as type
+FROM product
+  LEFT JOIN history ON product.id = history.productId
+  LEFT JOIN invoice ON invoice.id = history.invoiceId
+WHERE (
+    invoice.timeCreate BETWEEN '2021-4-16' AND '2021-4-20'
+  )
+  AND product.isActive = TRUE
+  AND invoice.type = 'in'
+GROUP BY product.id
+UNION
+SELECT product.id as id,
+  product.inPrice as inPrice,
+  product.outPrice as outPrice,
+  product.avaiable as avaiable,
+  product.name as name,
+  product.description as description,
+  invoice.timeCreate as timeCreate,
+  SUM(history.quantity) as totalQty,
+  invoice.type as type
+FROM product
+  LEFT JOIN history ON product.id = history.productId
+  LEFT JOIN invoice ON invoice.id = history.invoiceId
+WHERE (
+    invoice.timeCreate BETWEEN '2021-4-16' AND '2021-4-20'
+  )
+  AND product.isActive = TRUE
+  AND invoice.type = 'out'
+GROUP BY product.id

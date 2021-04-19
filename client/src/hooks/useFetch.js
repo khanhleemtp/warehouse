@@ -11,10 +11,11 @@ const useFetch = (url) => {
     setTimeout(async () => {
       try {
         const res = await fetch(url, { signal: abortCont.signal });
-        if (!res.ok) {
-          throw Error("Vui lòng nhập đúng thông tin");
-        }
         const newData = await res.json();
+        console.log(newData);
+        if (newData?.type === "error") {
+          throw Error(newData.message);
+        }
         setData(newData);
         console.log("newDataa", newData);
         setIsPending(false);

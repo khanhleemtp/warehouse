@@ -8,6 +8,7 @@ import {
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -20,9 +21,10 @@ import { DeleteOutlineOutlined, CreateOutlined } from "@material-ui/icons";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 
-import { CSVLink } from "react-csv";
+// import { CSVLink } from "react-csv";
 import useFetch from "../hooks/useFetch";
 import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
+import Report from "../components/Report";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -30,21 +32,23 @@ function Alert(props) {
 
 // return forwardRef React Note
 
-const headers = [
-  { label: "Tên sản phẩm", key: "name" },
-  { label: "Giá nhập", key: "inPrice" },
-  { label: "Giá bán", key: "outPrice" },
-  { label: "Số lượng", key: "avaiable" },
-  { label: "Mô tả", key: "description" },
-];
+// const headers = [
+//   { label: "Tên sản phẩm", key: "name" },
+//   { label: "Giá nhập", key: "inPrice" },
+//   { label: "Giá bán", key: "outPrice" },
+//   { label: "Số lượng", key: "avaiable" },
+//   { label: "Mô tả", key: "description" },
+// ];
 
 const useStyles = makeStyles({
   btn: {
     display: "flex",
     fontSize: 15,
+    color: "#fff",
     "&:hover": {
-      backgroundColor: colors.pink[400],
+      backgroundColor: colors.pink[300],
     },
+    marginTop: 12,
   },
   title: {
     textDecoration: "underline",
@@ -70,16 +74,20 @@ function Inventory() {
     url
   );
   const [to, setTo] = useState(null);
+  const [search, setSearch] = useState(false);
   const [errDate, setErrDate] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!from || !to) {
+      return setErrDate("Hãy nhập đủ thông tin ngày");
+    }
     if (from && to) {
       setProducts(null);
-      setErrDate("");
       setUrl(`http://127.0.0.1:8000/api/v1/products?from=${from}&to=${to}`);
+      setSearch(true);
+      return setErrDate("");
     }
-    setErrDate("Hãy nhập đủ thông tin ngày");
   };
 
   const history = useHistory();
@@ -115,7 +123,7 @@ function Inventory() {
       <Typography variant="h6" component="h6" color="error" gutterBottom>
         {errDate}
       </Typography>
-      {!isPending && products ? (
+      {/* {!isPending && products ? (
         <CSVLink
           data={products?.data}
           filename={"report.csv"}
@@ -126,7 +134,7 @@ function Inventory() {
         </CSVLink>
       ) : (
         <Typography>Vui lòng lấy thông tin sản phẩm để tải báo cáo</Typography>
-      )}
+      )} */}
 
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <TextField
@@ -166,7 +174,20 @@ function Inventory() {
           Tìm kiếm
         </Button>
       </form>
-
+      {products && products?.data && products?.data.length && search > 0 ? (
+        <Button>
+          <PDFDownloadLink
+            document={<Report productsList={products.data} />}
+            fileName="report.pdf"
+            style={{
+              padding: 12,
+              textDecoration: "none",
+            }}
+          >
+            {({ loading }) => (loading ? "Loading ..." : "Tải báo cáo ngay")}
+          </PDFDownloadLink>
+        </Button>
+      ) : null}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={2000}
@@ -188,10 +209,17 @@ function Inventory() {
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
+                <TableCell>Mã sản phẩm</TableCell>
                 <TableCell>Tên sản phẩm</TableCell>
                 <TableCell align="right">Giá mua</TableCell>
                 <TableCell align="right">Giá bán</TableCell>
-                <TableCell align="right">Số lượng</TableCell>
+                {from && to && search && (
+                  <>
+                    <TableCell align="right">Nhập kho</TableCell>
+                    <TableCell align="right">Xuất kho </TableCell>
+                  </>
+                )}
+                <TableCell align="right">Tồn kho</TableCell>
                 <TableCell align="right">Mô tả</TableCell>
                 <TableCell align="right">Action</TableCell>
               </TableRow>
@@ -200,10 +228,19 @@ function Inventory() {
               {products?.data.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell component="th" scope="row">
+                    BT_000{product.id}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
                     {product.name}
                   </TableCell>
                   <TableCell align="right">{product.inPrice}</TableCell>
                   <TableCell align="right">{product.outPrice}</TableCell>
+                  {from && to && search && (
+                    <>
+                      <TableCell align="right">{product.totalIn}</TableCell>
+                      <TableCell align="right">{product.totalOut}</TableCell>
+                    </>
+                  )}
                   <TableCell align="right">{product.avaiable}</TableCell>
                   <TableCell align="right" title={product.description}>
                     {product.description}

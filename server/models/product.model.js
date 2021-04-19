@@ -32,22 +32,50 @@ class ProductModel {
       sql = `
       SELECT
       product.id as id,
-      product.inPrice as inPrice,
-      product.name as name,
-      product.outPrice as outPrice,
-      product.avaiable as avaiable,
-      product.description as description,
-      invoice.timeCreate as timeCreate
-      FROM product
-  
-  
-      LEFT JOIN history
-      ON product.id = history.productId
-      LEFT JOIN invoice
-      ON invoice.id = history.invoiceId
-  
-      WHERE invoice.timeCreate BETWEEN '${params.from}' AND '${params.to}' AND product.isActive = TRUE
-      GROUP BY product.id
+        product.inPrice as inPrice,
+        product.outPrice as outPrice,
+        product.avaiable as avaiable,
+        product.name as name,
+        product.description as description,
+        invoice.timeCreate as timeCreate,
+        SUM(history.quantity) as totalQty,
+        invoice.type as type
+    
+        FROM product
+    
+    
+        LEFT JOIN history
+        ON product.id = history.productId
+        LEFT JOIN invoice
+        ON invoice.id = history.invoiceId
+    
+        WHERE (invoice.timeCreate BETWEEN '${params.from}' AND '${params.to}') AND product.isActive = TRUE AND invoice.type='in'
+           GROUP BY product.id
+    UNION
+    
+    SELECT
+      product.id as id,
+        product.inPrice as inPrice,
+        product.outPrice as outPrice,
+        product.avaiable as avaiable,
+        product.name as name,
+        product.description as description,
+        invoice.timeCreate as timeCreate,
+        SUM(history.quantity) as totalQty,
+        invoice.type as type
+    
+        FROM product
+    
+    
+        LEFT JOIN history
+        ON product.id = history.productId
+        LEFT JOIN invoice
+        ON invoice.id = history.invoiceId
+    
+        WHERE (invoice.timeCreate BETWEEN '${params.from}' AND '${params.to}') AND product.isActive = TRUE AND invoice.type='out'
+        
+        
+        GROUP BY product.id
       `;
       return await query(sql);
     }
@@ -112,7 +140,7 @@ class ProductModel {
     product.description as description,
     invoice.timeCreate as timeCreate
     FROM product
-
+    
 
     LEFT JOIN history
     ON product.id = history.productId

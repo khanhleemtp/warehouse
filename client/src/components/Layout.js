@@ -15,11 +15,9 @@ import { AddCircleOutlined, SubjectOutlined } from "@material-ui/icons";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import UpdateIcon from "@material-ui/icons/Update";
-import moment from "moment";
-import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { useState } from 'react'
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { useState } from "react";
 
 const drawWidth = 240;
 
@@ -48,9 +46,8 @@ const useStyles = makeStyles((theme) => {
     appbar: {
       width: `calc(100% - ${drawWidth}px)`,
       background:
-        "linear-gradient(to right top, #ff6e9c, #f677b0, #e980c0, #db8acd, #cc93d7)",
-      // "linear-gradient(to right top, #2a2b2b, #2a5451, #1b8073, #00ae8e, #05dda1)",
-      // color: colors.green["700"],
+        "linear-gradient(to right top, #c18448, #ca8447, #d38347, #dc8247, #e58048)",
+      // "linear-gradient(to right top, #ff6e9c, #f677b0, #e980c0, #db8acd, #cc93d7)",
     },
     toolbar: theme.mixins.toolbar,
     date: {
@@ -94,19 +91,18 @@ const Layout = ({ children }) => {
     },
   ];
 
-
-  const [err, setErr] = useState('')
- console.log('token' ,localStorage.getItem('tokenAdmin'))
+  const [err, setErr] = useState("");
+  console.log("token", localStorage.getItem("tokenAdmin"));
   return (
     <div className={classes.root}>
       {/* appbar */}
       <AppBar className={classes.appbar} elevation={0}>
         <Toolbar>
           <Typography className={classes.date}>
-            Today is the {moment().format("LLLL")}
+            {/* Today is the {moment().format("LLLL")} */}
           </Typography>
           <Typography variant="h6">Hi</Typography>
-          <Avatar className={classes.avatar}>K</Avatar>
+          <Avatar className={classes.avatar}>T</Avatar>
         </Toolbar>
       </AppBar>
 
@@ -127,7 +123,7 @@ const Layout = ({ children }) => {
             paragraph={true}
             className={classes.title}
           >
-            Warehouse
+            VNPost
           </Typography>
         </Box>
         <List>
@@ -136,14 +132,14 @@ const Layout = ({ children }) => {
               key={item.text}
               button
               onClick={() => {
-               let token = localStorage.getItem('tokenAdmin');
-                if(item.path === '/') {
-                  return setErr('');
+                let token = localStorage.getItem("tokenAdmin");
+                if (item.path === "/") {
+                  return setErr("");
                 }
-                if(token == null) {
-                  return setErr('Hãy đăng nhập trước khi dùng');
+                if (token == null) {
+                  return setErr("Hãy đăng nhập trước khi dùng");
                 }
-                setErr('')
+                setErr("");
                 history.push({ pathname: item.path });
               }}
               className={
@@ -154,24 +150,27 @@ const Layout = ({ children }) => {
               <ListItemText primary={item.text} />
             </ListItem>
           ))}
-          {
-          localStorage.getItem('tokenAdmin') ? 
+          {localStorage.getItem("tokenAdmin") ? (
             <ListItem
               button
               onClick={() => {
-                localStorage.removeItem('tokenAdmin');
-                history.push('/')
+                localStorage.removeItem("tokenAdmin");
+                history.push("/");
               }}
             >
-              <ListItemIcon><ExitToAppIcon/></ListItemIcon>
+              <ListItemIcon>
+                <ExitToAppIcon color="secondary" />
+              </ListItemIcon>
               <ListItemText primary={"Đăng xuất"} />
-            </ListItem>: null
-          }
+            </ListItem>
+          ) : null}
         </List>
       </Drawer>
       <div className={classes.page}>
         <div className={classes.toolbar}></div>
-        <Typography variant="h6" color="error">{err}</Typography>
+        <Typography variant="h6" color="error">
+          {err}
+        </Typography>
         {children}
       </div>
     </div>

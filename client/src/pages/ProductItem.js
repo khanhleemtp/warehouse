@@ -23,9 +23,11 @@ const useStyles = makeStyles({
   btn: {
     display: "flex",
     fontSize: 15,
+    color: "#fff",
     "&:hover": {
-      backgroundColor: colors.pink[400],
+      backgroundColor: colors.pink[300],
     },
+    marginTop: 12,
   },
   title: {
     textDecoration: "underline",

@@ -3,12 +3,12 @@ import { Suspense } from "react";
 import { lazy } from "@loadable/component";
 import pMinDelay from "p-min-delay";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
-import { pink } from "@material-ui/core/colors";
+import { pink, yellow } from "@material-ui/core/colors";
 // import Layout from "./components/Layout";
 import ProductItem from "./pages/ProductItem";
 import Loading from "./components/Loading";
 import InvocePage from "./pages/InvocePage";
-import ProtectedRoute from './hoc/ProtectedRoute'
+import ProtectedRoute from "./hoc/ProtectedRoute";
 
 const Layout = lazy(() => pMinDelay(import("./components/Layout"), 500));
 const Notes = lazy(() => pMinDelay(import("./pages/Notes"), 500));
@@ -24,7 +24,7 @@ const theme = createMuiTheme({
       main: pink[400],
     },
     secondary: {
-      main: pink[400],
+      main: yellow[900],
     },
   },
   typography: {
@@ -36,8 +36,6 @@ const theme = createMuiTheme({
   },
 });
 
-console.log(`${process.env.PUBLIC_URL}`);
-
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -48,43 +46,26 @@ function App() {
               <Route exact path="/">
                 <Notes />
               </Route>
-              <ProtectedRoute
-                component={Create}
-                path="/create"
-              />
+              <ProtectedRoute component={Create} path="/create" />
               {/* <Route path="/create">
                 <Create />
               </Route> */}
 
-              <ProtectedRoute
-                component={ProductItem}
-                path="/products/:id"
-              />
+              <ProtectedRoute component={ProductItem} path="/products/:id" />
               {/* <Route path="/products/:id">
                 <ProductItem />
               </Route> */}
-              <ProtectedRoute
-                component={Inventory}
-                path="/inventory"
-              />
+              <ProtectedRoute component={Inventory} path="/inventory" />
               {/* <Route path="/inventory">
                 <Inventory />
               </Route> */}
-              <ProtectedRoute
-                component={InvocePage}
-                path="/invoices/:id"
-              />
+              <ProtectedRoute component={InvocePage} path="/invoices/:id" />
               {/* <Route path="/invoices/:id">
                 <InvocePage />
               </Route> */}
-              <ProtectedRoute
-                component={InProduct}
-                path="/in"
-              />
-              <ProtectedRoute
-                component={OutProduct}
-                path="/out"
-              />
+              <ProtectedRoute component={InProduct} path="/in" />
+              <ProtectedRoute component={OutProduct} path="/out" />
+
               {/* <Route path="/in">
                 <InProduct />
               </Route> */}

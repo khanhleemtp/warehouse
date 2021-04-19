@@ -21,9 +21,11 @@ const useStyles = makeStyles({
   btn: {
     display: "flex",
     fontSize: 15,
+    color: "#fff",
     "&:hover": {
-      backgroundColor: colors.pink[400],
+      backgroundColor: colors.pink[300],
     },
+    marginTop: 12,
   },
   title: {
     textDecoration: "underline",
@@ -53,36 +55,36 @@ function Notes() {
   // handle submit create product
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(!username) {
-      return setError('Hãy nhập tài khoản')
+    if (!username) {
+      return setError("Hãy nhập tài khoản");
     }
-    if(!password) {
-      return setError('Hãy nhập mật khẩu')
+    if (!password) {
+      return setError("Hãy nhập mật khẩu");
     }
     if (username && password) {
-      setError('')
+      setError("");
       fetch("http://127.0.0.1:8000/api/v1/users", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          username,
-          password
+          username: username.trim(),
+          password: password.trim(),
         }),
       })
         .then((res) => {
           // console.log(res.json())
           return res.json();
         })
-        .then(data => {
+        .then((data) => {
           console.log(data);
-          if(data.status==='error') {
-              setError(data.message)
+          if (data.status === "error") {
+            setError(data.message);
           }
-          if(data.status==='success') {
-            localStorage.setItem('tokenAdmin', data.token);
-            history.push('/inventory')
+          if (data.status === "success") {
+            localStorage.setItem("tokenAdmin", data.token);
+            history.push("/inventory");
           }
         })
         .catch((err) => console.log(err.message));
@@ -103,7 +105,7 @@ function Notes() {
       <Typography variant="h4" component="h2" color="secondary" gutterBottom>
         Đăng nhập
       </Typography>
-    <Typography variant="h6" component="h6" color="error" gutterBottom>
+      <Typography variant="h6" component="h6" color="error" gutterBottom>
         {error}
       </Typography>
       <Snackbar
@@ -127,16 +129,16 @@ function Notes() {
           required
           className={classes.field}
         />
-    
+
         <TextField
           onChange={(e) => setPassword(e.target.value)}
           label="Mật khẩu"
           variant="outlined"
           color="secondary"
+          type="password"
           fullWidth
           required
           multiline
-          rows={4}
           className={classes.field}
         />
         <Button

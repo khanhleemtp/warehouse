@@ -43,8 +43,9 @@ const useStyles = makeStyles({
   btn: {
     display: "flex",
     fontSize: 15,
+    color: "#fff",
     "&:hover": {
-      backgroundColor: colors.pink[400],
+      backgroundColor: colors.pink[300],
     },
     marginTop: 12,
   },
@@ -292,7 +293,9 @@ function TypeProduct({ type }) {
               const product = products?.data.filter((p) => p.id === id)[0];
               setName(id);
               if (typeInvoice === "out" && product.avaiable < quantity) {
-                setErrorQty("Số lượng sản phẩm không vượt quá trong kho");
+                return setErrorQty(
+                  "Số lượng sản phẩm không vượt quá trong kho"
+                );
               }
 
               setProductChoice({ ...product });
@@ -367,10 +370,13 @@ function TypeProduct({ type }) {
                   const newArr = prev.map((product) => {
                     if (product.id === productChoice.id) {
                       if (
+                        typeInvoice === "out" &&
                         product.quantity * 1 + productChoice.quantity * 1 >
-                        product.avaiable
+                          product.avaiable
                       ) {
-                        setErrorQty("Số lượng sản phẩm trong kho không đủ");
+                        return setErrorQty(
+                          "Số lượng sản phẩm trong kho không đủ"
+                        );
                       }
                       return {
                         ...productChoice,
@@ -409,6 +415,7 @@ function TypeProduct({ type }) {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell>Mã sản phẩm</TableCell>
               <TableCell>Tên sản phẩm</TableCell>
               <TableCell align="right">Mô tả</TableCell>
               <TableCell align="right">Giá mua</TableCell>
@@ -423,8 +430,9 @@ function TypeProduct({ type }) {
               productsChoice.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell component="th" scope="row">
-                    {product.name}
+                    BT_{product.id}
                   </TableCell>
+                  <TableCell align="right">{product.name}</TableCell>
                   <TableCell align="right">{product.description}</TableCell>
                   <TableCell align="right">{product.inPrice}</TableCell>
                   <TableCell align="right">{product.outPrice}</TableCell>

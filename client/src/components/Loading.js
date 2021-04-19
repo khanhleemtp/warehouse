@@ -11,7 +11,7 @@ const Loading = () => {
         background: "transparent",
       }}
     >
-      <img src="m2.gif" alt="mario" width={160} />
+      <img src="vnp.png" alt="mario" width={160} />
     </div>
   );
 };

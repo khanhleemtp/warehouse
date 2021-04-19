@@ -153,6 +153,7 @@ router.route('/:id').get(
 
     let invoice = {
       id: output[0].invoiceId,
+      type: output[0].type,
       title: output[0].title,
       totalPrice: output[0].totalPrice,
       customer: output[0].customer,

@@ -55,7 +55,9 @@ const styles = StyleSheet.create({
   textLarge: {
     fontSize: 20,
   },
-
+  headerCenter: {
+    textAlign: "center",
+  },
   headerRight: {
     textAlign: "right",
     fontSize: 14,
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
     padding: 10,
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
     borderWidth: 2,
     borderColor: "#EDEDED",
   },
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
   },
   tableHeadingB: {
     width: "50%",
-    fontSize: 14,
+    fontSize: 12,
     color: "#0084B4",
   },
   tableHeadingC: {
@@ -173,129 +176,66 @@ const styles = StyleSheet.create({
   },
 });
 
-const Invoice = ({ invoiceData }) => (
+const Report = ({ productsList }) => (
   <Document>
     <Page style={styles.body}>
       <View style={styles.header}>
-        {/* Sửa tiêu đề */}
-        <View style={styles.headerLeft}>
-          <Text style={styles.textLarge}>Bưu điện Nghệ An</Text>
-          <Text>Số 2, Nguyễn Thị Minh Khai</Text>
-          <Text
-            style={{
-              fontSize: 12,
-              marginTop: 16,
-            }}
-          >
-            Tên người {invoiceData === "in" ? "nhập" : "xuất"}:{" "}
-            {invoiceData.employee}
-          </Text>
-          <Text>Đơn vị: {invoiceData.customer.toLocaleUpperCase()}</Text>
-        </View>
         {/* Sửa địa chỉ */}
-        <View style={styles.headerRight}>
+        <View style={styles.headerCenter}>
           {/* TODO Sửa đơn vị */}
-          <Text style={{ fontSize: 24 }}>
-            Hóa Đơn {invoiceData.type === "in" ? "Nhập hàng" : "Xuất hàng"}
-          </Text>
+          <Text style={{ fontSize: 24 }}>Báo cáo xuất nhập kho</Text>
+          <Text style={{ fontSize: 16 }}>{moment().format("DD-MM-YYYY")}</Text>
         </View>
       </View>
 
       <View style={styles.ribbon}>
         <View style={styles.ribbonBox}>
-          <Text style={styles.ribbonLabel}>Ngày</Text>
+          <Text style={styles.ribbonLabel}></Text>
           <Text style={styles.ribbonValue}>
-            {moment(invoiceData.timeCreate).format("DD-MM-YYYY")}
+            {/* {moment().format("DD-MM-YYYY")} */}
           </Text>
         </View>
         <View style={styles.ribbonBox}>
-          <Text style={styles.ribbonLabel}> </Text>
+          <Text style={styles.ribbonLabel}>Bưu Điện Nghệ An</Text>
           <Text style={styles.ribbonValue}></Text>
         </View>
         <View style={styles.ribbonBox}>
-          <Text style={styles.ribbonLabel}>
-            Hóa đơn {invoiceData.type === "in" ? "nhập kho" : "xuất kho"}
-          </Text>
-          {/* TODO sửa tên nhập kho */}
-          <Text style={styles.ribbonValue}>#BT_{invoiceData.id}</Text>
+          <Text style={styles.ribbonLabel}></Text>
         </View>
       </View>
       {/* TODO Báo cáo */}
       <View style={styles.table}>
         <View style={styles.tableRowB}>
-          <Text style={styles.tableHeadingA}>Mã sản phẩm</Text>
-          <Text style={styles.tableHeadingA}>Sản phẩm</Text>
-          <Text style={styles.tableHeadingB}>Giá</Text>
-          <Text style={styles.tableHeadingB}>Số lượng</Text>
-          <Text style={styles.tableHeadingC}>Thành tiền</Text>
+          <Text style={styles.tableHeadingB}>Mã sản phẩm</Text>
+          <Text style={styles.tableHeadingB}>Sản phẩm</Text>
+          <Text style={styles.tableHeadingB}>Giá nhập</Text>
+          <Text style={styles.tableHeadingB}>Giá xuất</Text>
+          <Text style={styles.tableHeadingB}>Nhập kho</Text>
+          <Text style={styles.tableHeadingB}>Xuất kho</Text>
+          <Text style={styles.tableHeadingB}>Tồn kho</Text>
+          <Text style={styles.tableHeadingB}>Mô tả</Text>
         </View>
 
-        {invoiceData.history.map((item) => {
-          let price = invoiceData.type === "in" ? item.inPrice : item.outPrice;
+        {productsList.map((item) => {
           return (
             <View
-              style={
-                item.productId % 2 === 0 ? styles.tableRowA : styles.tableRowB
-              }
-              key={item.productId}
+              style={item.id % 2 === 0 ? styles.tableRowA : styles.tableRowB}
+              key={item.id}
             >
-              <Text style={styles.serviceName}>BT_{item.productId}</Text>
+              <Text style={styles.serviceName}>BT_{item.id}</Text>
               <Text style={styles.serviceName}>{item.name}</Text>
-              <Text style={styles.serviceDescription}>{price}</Text>
-              <Text style={styles.serviceDescription}>{item.quantity}</Text>
-              <Text style={styles.serviceAmount}>{item.quantity * price}</Text>
+              <Text style={styles.serviceName}>{item.inPrice}</Text>
+              <Text style={styles.serviceName}>{item.outPrice}</Text>
+              <Text style={styles.serviceName}>{item.avaiable}</Text>
+              <Text style={styles.serviceName}>{item.totalIn}</Text>
+              <Text style={styles.serviceName}>{item.totalOut}</Text>
+              <Text style={styles.serviceName}>{item.description}</Text>
             </View>
           );
         })}
-
-        {/* <View style={styles.tableRowB}>
-          <Text style={styles.serviceName}>Development</Text>
-          <Text style={styles.serviceDescription}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod
-          </Text>
-          <Text style={styles.serviceAmount}>£2000.00</Text>
-        </View>
-
-        <View style={styles.tableRowA}>
-          <Text style={styles.serviceName}>Consultation</Text>
-          <Text style={styles.serviceDescription}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod
-          </Text>
-          <Text style={styles.serviceAmount}>£1500.00</Text>
-        </View> */}
-
-        <View style={styles.summary}>
-          <Text style={styles.summaryMeta}>Tổng chi phí: </Text>
-          <Text style={styles.summaryAmount}>{invoiceData.totalPrice}</Text>
-        </View>
-      </View>
-
-      <View style={styles.ribbonGrey}>
-        <View style={styles.ribbonBox}>
-          <Text style={styles.ribbonLabel}></Text>
-          <Text style={styles.ribbonValue}></Text>
-        </View>
-        <View style={styles.ribbonBox}>
-          <Text style={styles.ribbonLabel}></Text>
-          <Text style={styles.ribbonValue}></Text>
-        </View>
-        <View style={styles.ribbonBox}>
-          <Text style={styles.ribbonLabel}>
-            Người {invoiceData === "in" ? "nhập" : "xuất"} :{" "}
-          </Text>
-          <Text style={styles.ribbonValue}>
-            {invoiceData.employee.toLocaleUpperCase()}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.footer}>
-        <Text>neu.com &bull; neu@neu.com &bull; 0123 456 7890</Text>
       </View>
     </Page>
   </Document>
 );
 
-export default Invoice;
+export default Report;

@@ -26,8 +26,8 @@ app.post('/api/v1/users', (req, res, next) => {
   console.log(req.body);
   let admin = {
     id: '123456abcd',
-    username: 'admin',
-    password: 'admin',
+    username: 'tai',
+    password: '123456',
   };
   const { username, password } = req.body;
   if (admin.username !== username) {
