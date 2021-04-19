@@ -20,14 +20,33 @@ class ProductController {
           avaiable: invoices[0].avaiable,
           description: invoices[0].description,
           name: invoices[0].name,
-          totalIn:
-            invoices.filter((invoice) => invoice.type === 'in')[0].totalQty * 1,
-          totalOut:
-            invoices.filter((invoice) => invoice.type === 'out')[0].totalQty *
-            1,
+          invoices: invoices,
         };
         return product;
       });
+      productList = productList.map((item) => {
+        let totalIn = 0;
+        let totalOut = 0;
+        if (item.invoices.length === 1) {
+          if (item.invoices[0].type === 'in') {
+            totalIn = item.invoices[0].totalQty * 1;
+          }
+          if (item.invoices[0].type === 'out') {
+            totalOut = item.invoices[0].totalQty * 1;
+          }
+        }
+        if (item.invoices.length === 2) {
+          totalIn = item.invoices[0].totalQty * 1;
+          totalOut = item.invoices[1].totalQty * 1;
+        }
+        delete item['invoices'];
+        return {
+          ...item,
+          totalIn,
+          totalOut,
+        };
+      });
+      delete productList['invoice'];
     }
     if (!productList.length) {
       throw new HttpException(
