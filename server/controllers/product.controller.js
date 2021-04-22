@@ -7,77 +7,50 @@ const HttpException = require('../utils/HttpException.utils');
 class ProductController {
   getAllProduct = async (req, res, next) => {
     let productList = await ProductModel.find(req.query);
-    if (req.query && req.query.from && req.query.to) {
-      let unixproductIds = [
-        ...new Set(productList.map((product) => product.id)),
-      ];
-      productList = unixproductIds.map((productId) => {
-        const invoices = productList.filter((p) => p.id === productId);
-        let product = {
-          id: invoices[0].id,
-          outPrice: invoices[0].outPrice,
-          inPrice: invoices[0].inPrice,
-          avaiable: invoices[0].avaiable,
-          description: invoices[0].description,
-          name: invoices[0].name,
-          invoices: invoices,
-        };
-        return product;
-      });
-      productList = productList.map((item) => {
-        let totalIn = 0;
-        let totalOut = 0;
-        if (item.invoices.length === 1) {
-          if (item.invoices[0].type === 'in') {
-            totalIn = item.invoices[0].totalQty * 1;
-          }
-          if (item.invoices[0].type === 'out') {
-            totalOut = item.invoices[0].totalQty * 1;
-          }
-        }
-        if (item.invoices.length === 2) {
+    let unixproductIds = [...new Set(productList.map((product) => product.id))];
+    productList = unixproductIds.map((productId) => {
+      const invoices = productList.filter((p) => p.id === productId);
+      let product = {
+        id: invoices[0].id,
+        outPrice: invoices[0].outPrice,
+        inPrice: invoices[0].inPrice,
+        avaiable: invoices[0].avaiable,
+        description: invoices[0].description,
+        name: invoices[0].name,
+        invoices: invoices,
+      };
+      return product;
+    });
+    productList = productList.map((item) => {
+      let totalIn = 0;
+      let totalOut = 0;
+      if (item.invoices.length === 1) {
+        if (item.invoices[0].type === 'in') {
           totalIn = item.invoices[0].totalQty * 1;
-          totalOut = item.invoices[1].totalQty * 1;
         }
-        delete item['invoices'];
-        return {
-          ...item,
-          totalIn,
-          totalOut,
-        };
-      });
-      delete productList['invoice'];
-    }
+        if (item.invoices[0].type === 'out') {
+          totalOut = item.invoices[0].totalQty * 1;
+        }
+      }
+      if (item.invoices.length === 2) {
+        totalIn = item.invoices[0].totalQty * 1;
+        totalOut = item.invoices[1].totalQty * 1;
+      }
+      delete item['invoices'];
+      return {
+        ...item,
+        totalIn,
+        totalOut,
+      };
+    });
+    delete productList['invoice'];
+
     if (!productList.length) {
       throw new HttpException(
         404,
-        'Không tìm thấy sản phẩm trong kho vui lòng nhập lại ngày ⛴ 🧑'
+        'Không tìm thấy sản phẩm trong kho theo yêu cầu 🧟'
       );
     }
-    res.status(200).json({
-      status: 'success',
-      result: productList.length,
-      data: productList,
-    });
-  };
-
-  getByTime = async (req, res, next) => {
-    console.log('query: ', req.query);
-    let productList = await ProductModel.findByTime(req.query);
-    console.log('product list', productList);
-    productList = productList.map((product) => ({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      inPrice: product.inPrice,
-      outPrice: product.outPrice,
-      avaiable: product.avaiable,
-    }));
-
-    if (!productList.length) {
-      throw new HttpException(404, 'Không tìm thấy sản phẩm');
-    }
-
     res.status(200).json({
       status: 'success',
       result: productList.length,

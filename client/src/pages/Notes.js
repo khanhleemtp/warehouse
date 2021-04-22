@@ -84,7 +84,7 @@ function Notes() {
           }
           if (data.status === "success") {
             localStorage.setItem("tokenAdmin", data.token);
-            history.push("/inventory");
+            history.push("/home");
           }
         })
         .catch((err) => console.log(err.message));

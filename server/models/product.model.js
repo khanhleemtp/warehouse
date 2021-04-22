@@ -26,10 +26,23 @@ class ProductModel {
     if (!Object.keys(params).length) {
       return await query(sql);
     }
-    console.log(params);
 
+    let where = '';
     if (params.from && params.to) {
-      sql = `
+      where += `(invoice.timeCreate BETWEEN '${params.from}' AND '${params.to}') AND `;
+    }
+    if (params.avaiable) {
+      where += `(product.avaiable BETWEEN ${params.avaiable.gt * 1} AND ${
+        params.avaiable.lt * 1
+      }) AND `;
+    }
+    if (params.name) {
+      where += `(product.name LIKE '%${params.name}%') AND `;
+    }
+
+    console.log(' where: ', where);
+
+    sql = `
       SELECT
       product.id as id,
         product.inPrice as inPrice,
@@ -49,7 +62,7 @@ class ProductModel {
         LEFT JOIN invoice
         ON invoice.id = history.invoiceId
     
-        WHERE (invoice.timeCreate BETWEEN '${params.from}' AND '${params.to}') AND product.isActive = TRUE AND invoice.type='in'
+        WHERE ${where} product.isActive = TRUE AND invoice.type='in'
            GROUP BY product.id
     UNION
     
@@ -72,18 +85,13 @@ class ProductModel {
         LEFT JOIN invoice
         ON invoice.id = history.invoiceId
     
-        WHERE (invoice.timeCreate BETWEEN '${params.from}' AND '${params.to}') AND product.isActive = TRUE AND invoice.type='out'
+        WHERE ${where} product.isActive = TRUE AND invoice.type='out'
         
         
         GROUP BY product.id
       `;
-      return await query(sql);
-    }
 
-    const { columnSet, values } = multipleColumnSet(params);
-    sql += ` WHERE ${columnSet} WHERE isActive=true`;
-    console.log('sql', sql);
-    return await query(sql, [...values]);
+    return await query(sql);
   };
 
   // { id: req.params.id }
@@ -126,33 +134,6 @@ class ProductModel {
     // [...values, id] covert ? -> value
     const result = await query(sql, [...values, id]);
 
-    return result;
-  };
-
-  findByTime = async (params) => {
-    console.log('params', params);
-    const sql = `
-    SELECT
-	  product.id as id,
-    product.inPrice as inPrice,
-    product.outPrice as outPrice,
-    product.avaiable as avaiable,
-    product.description as description,
-    invoice.timeCreate as timeCreate
-    FROM product
-    
-
-    LEFT JOIN history
-    ON product.id = history.productId
-    LEFT JOIN invoice
-    ON invoice.id = history.invoiceId
-
-    WHERE invoice.timeCreate BETWEEN '${params.from}' AND '${params.to}' AND product.isActive = TRUE
-    GROUP BY product.id
-    `;
-
-    console.log(sql);
-    const result = await query(sql);
     return result;
   };
 }

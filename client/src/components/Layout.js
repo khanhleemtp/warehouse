@@ -15,6 +15,7 @@ import { AddCircleOutlined, SubjectOutlined } from "@material-ui/icons";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import UpdateIcon from "@material-ui/icons/Update";
+import AppsIcon from "@material-ui/icons/Apps";
 import { useHistory, useLocation } from "react-router-dom";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { useState } from "react";
@@ -65,9 +66,14 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const menuItem = [
     {
-      text: "Trang chủ",
+      text: "Đăng nhập",
       icon: <SubjectOutlined color="secondary" />,
       path: "/",
+    },
+    {
+      text: "Về chúng tôi",
+      icon: <AppsIcon color="secondary" />,
+      path: "/home",
     },
     {
       text: "Thêm sản phẩm",
@@ -133,13 +139,13 @@ const Layout = ({ children }) => {
               button
               onClick={() => {
                 let token = localStorage.getItem("tokenAdmin");
-                if (item.path === "/") {
+                if (item.path === "/" || token) {
                   setErr("");
                 }
                 if (token === null) {
                   return setErr("Hãy đăng nhập trước khi dùng");
                 }
-                setErr("");
+
                 history.push({ pathname: item.path });
               }}
               className={

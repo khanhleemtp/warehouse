@@ -16,6 +16,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import MenuItem from "@material-ui/core/MenuItem";
+
 import Paper from "@material-ui/core/Paper";
 import { DeleteOutlineOutlined, CreateOutlined } from "@material-ui/icons";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -64,30 +66,50 @@ const useStyles = makeStyles({
   },
 });
 
+const currencies = [
+  {
+    value: "0,10",
+    label: " Ít hơn 10",
+  },
+  {
+    value: "20,50",
+    label: "Từ 20 đến 50",
+  },
+  {
+    value: "50,100",
+    label: "Từ 50 đến 100",
+  },
+  {
+    value: "100,10000",
+    label: "Lớn hơn 100",
+  },
+];
+
 function Inventory() {
+  let baseUrl = `http://127.0.0.1:8000/api/v1/products`;
   const classes = useStyles();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [noti, setNoti] = useState("");
   const [from, setFrom] = useState(null);
-  const [url, setUrl] = useState("http://127.0.0.1:8000/api/v1/products/");
+  const [to, setTo] = useState(null);
+  const [errDate, setErrDate] = useState("");
+  const [name, setName] = useState("");
+  const [avaiable, setAvaiable] = useState("");
+  const [url, setUrl] = useState(`${baseUrl}?avaiable[gt]=0&avaiable[lt]=10`);
   const { data: products, isPending, error, setData: setProducts } = useFetch(
     url
   );
-  const [to, setTo] = useState(null);
-  const [search, setSearch] = useState(false);
-  const [errDate, setErrDate] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!from || !to) {
-      return setErrDate("Hãy nhập đủ thông tin ngày");
-    }
-    if (from && to) {
-      setProducts(null);
-      setUrl(`http://127.0.0.1:8000/api/v1/products?from=${from}&to=${to}`);
-      setSearch(true);
-      return setErrDate("");
-    }
+    setProducts(null);
+    let arrAvaiable = avaiable.split(",");
+    console.log("arr", arrAvaiable);
+    setUrl(
+      `${baseUrl}?avaiable[gt]=${arrAvaiable[0] * 1}&avaiable[lt]=${
+        arrAvaiable[1] * 1
+      }&name=${name}&from=${from}&to=${to}`
+    );
   };
 
   const history = useHistory();
@@ -95,7 +117,7 @@ function Inventory() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch("http://127.0.0.1:8000/api/v1/products/" + id, {
+      await fetch(`${baseUrl}/` + id, {
         method: "DELETE",
       });
       setOpenSnackbar(true);
@@ -123,19 +145,6 @@ function Inventory() {
       <Typography variant="h6" component="h6" color="error" gutterBottom>
         {errDate}
       </Typography>
-      {/* {!isPending && products ? (
-        <CSVLink
-          data={products?.data}
-          filename={"report.csv"}
-          headers={headers}
-          target="_blank"
-        >
-          <Button>Tải xuống báo cáo</Button>
-        </CSVLink>
-      ) : (
-        <Typography>Vui lòng lấy thông tin sản phẩm để tải báo cáo</Typography>
-      )} */}
-
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <TextField
           id="date"
@@ -163,18 +172,94 @@ function Inventory() {
             setTo(e.target.value);
           }}
         />
+        <Button
+          className={classes.btn}
+          variant="contained"
+          endIcon={<SendOutlinedIcon />}
+          color="secondary"
+          disabled={from && to ? false : true}
+          onClick={() => {
+            setProducts(null);
+            if (from && to) {
+              setProducts(null);
+              setUrl(`${baseUrl}?from=${from}&to=${to}`);
+            }
+          }}
+        >
+          Tìm kiếm
+        </Button>
+
+        <TextField
+          className={classes.field}
+          id="standard-multiline-static"
+          label="Tìm theo tên"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Button
+          className={classes.btn}
+          variant="contained"
+          endIcon={<SendOutlinedIcon />}
+          color="secondary"
+          disabled={name ? false : true}
+          onClick={() => {
+            setProducts(null);
+            setUrl(`${baseUrl}?name=${name}`);
+          }}
+        >
+          Tìm kiếm
+        </Button>
+        <TextField
+          id="standard-select-currency"
+          select
+          label="Tồn kho"
+          style={{
+            paddingLeft: 40,
+          }}
+          value={avaiable}
+          onChange={(e) => setAvaiable(e.target.value)}
+          helperText="Kiểm tra hàng tồn"
+          className={classes.field}
+        >
+          {currencies.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
 
         <Button
           className={classes.btn}
           variant="contained"
           endIcon={<SendOutlinedIcon />}
           color="secondary"
-          type="submit"
+          disabled={avaiable ? false : true}
+          onClick={() => {
+            setProducts(null);
+            let arrAvaiable = avaiable.split(",");
+            console.log("arr", arrAvaiable);
+            setUrl(
+              `${baseUrl}?avaiable[gt]=${arrAvaiable[0] * 1}&avaiable[lt]=${
+                arrAvaiable[1] * 1
+              }`
+            );
+          }}
         >
           Tìm kiếm
         </Button>
+
+        <Button
+          className={classes.btn}
+          variant="contained"
+          endIcon={<SendOutlinedIcon />}
+          color="secondary"
+          disabled={avaiable && name && from && to ? false : true}
+          type="submit"
+        >
+          Tìm kiếm theo tất cả tùy chọn
+        </Button>
       </form>
-      {products && products?.data && products?.data.length && search > 0 ? (
+      {products && products?.data && products?.data.length > 0 ? (
         <Button>
           <PDFDownloadLink
             document={<Report productsList={products.data} />}
@@ -213,12 +298,9 @@ function Inventory() {
                 <TableCell>Tên sản phẩm</TableCell>
                 <TableCell align="right">Giá mua</TableCell>
                 <TableCell align="right">Giá bán</TableCell>
-                {from && to && search && (
-                  <>
-                    <TableCell align="right">Nhập kho</TableCell>
-                    <TableCell align="right">Xuất kho </TableCell>
-                  </>
-                )}
+                <TableCell align="right">Nhập kho</TableCell>
+                <TableCell align="right">Xuất kho </TableCell>
+
                 <TableCell align="right">Tồn kho</TableCell>
                 <TableCell align="right">Mô tả</TableCell>
                 <TableCell align="right">Action</TableCell>
@@ -235,12 +317,8 @@ function Inventory() {
                   </TableCell>
                   <TableCell align="right">{product.inPrice}</TableCell>
                   <TableCell align="right">{product.outPrice}</TableCell>
-                  {from && to && search && (
-                    <>
-                      <TableCell align="right">{product.totalIn}</TableCell>
-                      <TableCell align="right">{product.totalOut}</TableCell>
-                    </>
-                  )}
+                  <TableCell align="right">{product.totalIn}</TableCell>
+                  <TableCell align="right">{product.totalOut}</TableCell>
                   <TableCell align="right">{product.avaiable}</TableCell>
                   <TableCell align="right" title={product.description}>
                     {product.description}

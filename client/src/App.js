@@ -21,6 +21,7 @@ const Create = lazy(() => pMinDelay(import("./pages/Create"), 500));
 const Inventory = lazy(() => pMinDelay(import("./pages/Inventory"), 500));
 const InProduct = lazy(() => pMinDelay(import("./pages/InProduct"), 500));
 const OutProduct = lazy(() => pMinDelay(import("./pages/OutProduct"), 500));
+const Home = lazy(() => pMinDelay(import("./pages/Home"), 500));
 
 // overide default themes
 const theme = createMuiTheme({
@@ -55,7 +56,7 @@ function App() {
                   if (!localStorage.getItem("tokenAdmin")) {
                     return <Notes {...props} />;
                   } else {
-                    return <Redirect to="inventory" />;
+                    return <Redirect to="home" />;
                   }
                 }}
               />
@@ -64,6 +65,7 @@ function App() {
               {/* <Route path="/create">
                 <Create />
               </Route> */}
+              <ProtectedRoute component={Home} path="/home" />
 
               <ProtectedRoute component={ProductItem} path="/products/:id" />
               {/* <Route path="/products/:id">
