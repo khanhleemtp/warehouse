@@ -33,11 +33,11 @@ function Alert(props) {
 
 // return forwardRef React Note
 
-const headers = [
-  { label: "Tên sản phẩm", key: "name" },
-  { label: "Giá nhập", key: "inPrice" },
-  { label: "Mô tả", key: "description" },
-];
+// const headers = [
+//   { label: "Tên sản phẩm", key: "name" },
+//   { label: "Giá nhập", key: "inPrice" },
+//   { label: "Mô tả", key: "description" },
+// ];
 
 const useStyles = makeStyles({
   btn: {
@@ -91,14 +91,44 @@ function TypeProduct({ type }) {
   const classes = useStyles();
   const [date, setDate] = useState(moment().format("YYYY-MM-DD"));
   const [productChoice, setProductChoice] = useState({});
-  const [customer, setCustomer] = useState("");
-  const [employee, setEmployee] = useState("");
+  const [customer, setCustomer] = useState(type === "in" ? "Công ty BT" : "");
+  const [employee, setEmployee] = useState("Tài");
   const [productsChoice, setProductsChoice] = useState([]);
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [errorQty, setErrorQty] = useState("");
   const [errorEmtpy, setErrorEmpty] = useState("");
+
+  // const suppliers = [
+  //   {
+  //     id: 1,
+  //     name: "Công ty BT",
+  //   },
+  // ];
+
+  const customers = [
+    {
+      id: 1,
+      name: "KH_1",
+    },
+    {
+      id: 2,
+      name: "KH_2",
+    },
+    {
+      id: 3,
+      name: "KH_3",
+    },
+    {
+      id: 4,
+      name: "KH_4",
+    },
+    {
+      id: 5,
+      name: "KH_5",
+    },
+  ];
 
   console.log(productsChoice);
 
@@ -177,7 +207,7 @@ function TypeProduct({ type }) {
   return (
     <Container>
       <Typography variant="h6" component="h2" color="secondary" gutterBottom>
-        Thêm sản phẩm
+        {typeInvoice === "in" ? "Nhập kho" : "Xuất kho"}
       </Typography>
       {/* {!isPending && (
         <CSVLink
@@ -217,22 +247,21 @@ function TypeProduct({ type }) {
             label="Tiêu đề"
             variant="outlined"
             color="secondary"
-            fullWidth
             required
             className={classes.field}
           />
 
           <TextField
-            onChange={(e) => setEmployee(e.target.value)}
+            value={employee}
+            disabled={true}
             label="Nhân viên"
             variant="outlined"
             color="secondary"
-            fullWidth
             required
             className={classes.field}
           />
 
-          <TextField
+          {/* <TextField
             onChange={(e) => setCustomer(e.target.value)}
             label="Khách hàng"
             variant="outlined"
@@ -240,7 +269,42 @@ function TypeProduct({ type }) {
             fullWidth
             required
             className={classes.field}
-          />
+          /> */}
+          <FormControl>
+            {type !== "in" ? (
+              <>
+                <InputLabel id="demo-simple-select-label-1">
+                  Chọn đơn vị
+                </InputLabel>
+                <Select
+                  className={classes.select}
+                  labelId="demo-simple-select-label-1"
+                  id="demo-simple-select"
+                  value={customer}
+                  onChange={(e) => {
+                    setCustomer(e.target.value);
+                  }}
+                  autoWidth={true}
+                >
+                  {customers.map((s) => (
+                    <MenuItem key={s.id} value={s.name}>
+                      {s.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </>
+            ) : (
+              <TextField
+                value={customer}
+                disabled={true}
+                label="Công ty"
+                variant="outlined"
+                color="secondary"
+                required
+                className={classes.field}
+              />
+            )}
+          </FormControl>
         </div>
 
         <div style={{ display: "flex", alignItems: "center" }}>
